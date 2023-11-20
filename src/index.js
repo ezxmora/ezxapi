@@ -1,10 +1,23 @@
-import app from './lib/express.js';
-import database from './lib/database.js';
-import { port, env } from './lib/env.js';
+import database from "./lib/database.js";
+import { env, host, port } from "./lib/env.js";
+import app from "./lib/express/index.js";
 
 database
   .initialize()
-  .then(() => console.log('📦 [DATABASE] Connection to the database established'))
-  .catch((err) => console.log(err));
+  .then(() =>
+    process.stdout.write(
+      "📦 [DATABASE] Connection to the database established\n"
+    )
+  )
+  .catch((err) =>
+    process.stdout.write(
+      `📦 [DATABASE] There was an error in the database ${err.message}\n`
+    )
+  );
 
-app.listen(port, () => console.log(`⚡ [SERVER] Express started on port ${port} @ ${env} enviroment`));
+app.get("/", (_, res) => res.send("Helo"));
+
+app.listen(port, () => {
+  process.stdout.write(`⚡ [SERVER] Express started in ${env} enviroment\n`);
+  process.stdout.write(`⚡ [SERVER] Running in http://${host}:${port}\n`);
+});

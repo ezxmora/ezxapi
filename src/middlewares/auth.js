@@ -1,23 +1,22 @@
-import { getRepository } from '../lib/util.js';
-import httpstatus from 'http-status';
+import httpstatus from "http-status";
+import { getRepository } from "../lib/util.js";
 
-export const auth = async (req, res, next) => {
+export const auth = async (req, _, next) => {
   try {
     let err;
-    const apiKey = req.headers['x-api-key'];
-    console.log(apiKey);
+    const apiKey = req.headers["x-api-key"];
 
     if (!apiKey) {
-      err = new Error('BAD REQUEST - You need to provide an API KEY');
+      err = new Error("BAD REQUEST - You need to provide an API KEY");
       err.statusCode = httpstatus.BAD_REQUEST;
       throw err;
     }
 
-    const keys = getRepository('Key');
+    const keys = getRepository("Key");
     const keyExists = await keys.findOneBy({ key: apiKey });
 
     if (!keyExists) {
-      err = new Error('BAD REQUEST - That key isn\'t valid.')
+      err = new Error("BAD REQUEST - That key isn't valid.");
       err.statusCode = httpstatus.BAD_REQUEST;
       throw err;
     }
@@ -26,4 +25,4 @@ export const auth = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-}
+};
