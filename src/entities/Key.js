@@ -1,20 +1,20 @@
 import { EntitySchema } from "typeorm";
 
 export default new EntitySchema({
-  name: 'Key',
-  tableName: 'keys',
+  name: "Key",
+  tableName: "keys",
   columns: {
     id: {
       primary: true,
-      type: 'uuid',
-      generated: 'uuid'
+      type: "uuid",
+      generated: "uuid",
     },
     key: {
-      type: 'varchar'
+      type: "varchar",
     },
     email: {
-      type: 'varchar',
+      type: "varchar",
       unique: true,
-    }
-  }
+    },
+  },
 });

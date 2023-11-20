@@ -1,17 +1,17 @@
-import httpstatus from 'http-status';
-import { randomBytes } from 'crypto';
-import { getRepository } from '../lib/util.js';
+import { randomBytes } from "crypto";
+import httpstatus from "http-status";
+import { getRepository } from "../lib/util.js";
 
-const generateRandomKey = () => randomBytes(32).toString('hex');
-const keys = getRepository('Key');
+const generateRandomKey = () => randomBytes(32).toString("hex");
+const keys = getRepository("Key");
 
 const keyExists = (email) => keys.findOneBy({ email });
 
 const invalidEmailError = (next) => {
-  const err = new Error('That email address isn\'t valid');
+  const err = new Error("That email address isn't valid");
   err.statusCode = httpstatus.BAD_REQUEST;
   next(err);
-}
+};
 
 export const createKey = async (req, res, next) => {
   const { email } = req.body;
@@ -20,8 +20,8 @@ export const createKey = async (req, res, next) => {
   if (!key) {
     const newKey = {
       key: generateRandomKey(),
-      email
-    }
+      email,
+    };
 
     const savedKey = await keys.save(newKey);
     delete savedKey.id;
@@ -45,4 +45,4 @@ export const refreshKey = async (req, res, next) => {
   }
 
   invalidEmailError(next);
-}
+};
