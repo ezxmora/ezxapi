@@ -1,12 +1,7 @@
-import { Joi } from "express-validation";
 import httpstatus from "http-status";
 import ytdl from "youtube-dl-exec";
-
-export const validEmail = {
-  body: Joi.object({
-    email: Joi.string().email().required(),
-  }),
-};
+import database from "../lib/database.js";
+const { author, quote } = database;
 
 export const validVideoURL = async (req, res, next) => {
   const { url } = req.query;
@@ -51,4 +46,48 @@ export const validExtension = (type) => {
 
     return next();
   };
+};
+
+export const authorExists = async (req, _, next) => {
+  const { authorId } = req.body;
+
+  try {
+    if (!authorId) {
+      const err = new Error("You need to provide a authorId");
+      err.statusCode = httpstatus.BAD_REQUEST;
+      return next(err);
+    }
+
+    const authorExists = await author.findOne({ where: { id: authorId } });
+
+    if (!authorExists) {
+      const err = new Error("That author doesn't exist");
+      err.statusCode = httpstatus.BAD_REQUEST;
+      return next(err);
+    }
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const quoteExists = async (req, res, next) => {
+  const { id } = req.body;
+
+  if (!id) {
+    const err = new Error("You need to provide an id");
+    err.statusCode = httpstatus.BAD_REQUEST;
+    return next(err);
+  }
+
+  const quoteExists = await quote.findOne({ where: { id } });
+
+  if (!quoteExists) {
+    const err = new Error("That quote doesn't exist");
+    err.statusCode = httpstatus.BAD_REQUEST;
+    return next(err);
+  }
+
+  return next();
 };

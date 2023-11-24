@@ -1,14 +1,15 @@
 export default (sequelize, DataTypes) => {
-  const Quote = sequelize.define(
-    "quote",
+  const Author = sequelize.define(
+    "author",
     {
       id: {
         primaryKey: true,
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
-      quote: {
+      name: {
         type: DataTypes.STRING,
+        unique: true,
       },
     },
     {
@@ -25,9 +26,9 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Quote.associate = (models) => {
-    models.quote.belongsTo(models.author);
+  Author.associate = (models) => {
+    models.author.hasMany(models.quote, { foreignKey: "authorId" });
   };
 
-  return Quote;
+  return Author;
 };

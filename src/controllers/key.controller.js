@@ -1,11 +1,11 @@
 import { randomBytes } from "crypto";
 import httpstatus from "http-status";
-import { getRepository } from "../lib/util.js";
+import database from "../lib/database.js";
+const { key } = database;
 
 const generateRandomKey = () => randomBytes(32).toString("hex");
-const keys = getRepository("Key");
 
-const keyExists = (email) => keys.findOneBy({ email });
+const keyExists = (email) => key.findOne({ where: { email } });
 
 const invalidEmailError = (next) => {
   const err = new Error("That email address isn't valid");
@@ -15,16 +15,15 @@ const invalidEmailError = (next) => {
 
 export const createKey = async (req, res, next) => {
   const { email } = req.body;
-  const key = await keyExists(email);
+  const isKey = await keyExists(email);
 
-  if (!key) {
+  if (!isKey) {
     const newKey = {
       key: generateRandomKey(),
       email,
     };
 
-    const savedKey = await keys.save(newKey);
-    delete savedKey.id;
+    const savedKey = await key.create(newKey);
 
     return res.json(savedKey);
   }
@@ -34,14 +33,13 @@ export const createKey = async (req, res, next) => {
 
 export const refreshKey = async (req, res, next) => {
   const { email } = req.body;
-  const key = await keyExists(email);
+  const isKey = await keyExists(email);
 
-  if (key && key.email === email) {
-    key.key = generateRandomKey();
-    const updatedKey = await keys.save(key);
-    delete updatedKey.id;
+  if (isKey && isKey.email === email) {
+    const newRandomKey = generateRandomKey();
+    await key.update({ key: newRandomKey }, { where: { email } });
 
-    return res.json(updatedKey);
+    return res.json({ key: newRandomKey, email });
   }
 
   invalidEmailError(next);

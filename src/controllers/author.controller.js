@@ -1,18 +1,18 @@
 import httpstatus from "http-status";
-import { getRepository } from "../lib/util.js";
-
-const authors = getRepository("QuoteAuthor");
-export const authorExists = (author) => authors.findOneBy({ name: author });
+import database from "../lib/database.js";
+const { author } = database;
 
 export const createAuthor = async (req, res, next) => {
   const { name } = req.body;
-  const author = await authorExists(name);
+  const findAuthor = await author.findOne({ where: { name } });
 
-  if (!author) {
-    const newAuthor = { name };
-    await authors.save(newAuthor);
+  if (!findAuthor) {
+    await author.create({ name });
 
-    return res.json(req.body);
+    return res.json({
+      author: { name },
+      message: `The author ${name} has been created`,
+    });
   }
 
   const err = new Error("That author already exists");
@@ -20,30 +20,24 @@ export const createAuthor = async (req, res, next) => {
   next(err);
 };
 
-export const updateAuthor = async (req, res, next) => {
-  const { name } = req.body;
-  const author = await authorExists(name);
+export const updateAuthor = async (req, res, _) => {
+  const { name, newName } = req.body;
 
-  if (author) {
-    author.name = name;
-    const updatedAuthor = await authors.save(author);
-    delete updatedAuthor.id;
+  await author.update({ name: newName }, { where: { name } });
 
-    return res.json(updatedAuthor);
-  }
-
-  const err = new Error("That author doesn't exist");
-  err.statusCode = httpstatus.BAD_REQUEST;
-  next(err);
+  return res.json({
+    author: { name: newName },
+    message: `${name} has been updated and is now ${newName}`,
+  });
 };
 
-export const deleteAuthor = async (req, res, next) => {
+export const deleteAuthor = async (req, res, _) => {
   const { name } = req.body;
-  const author = await authorExists(name);
 
-  if (author) {
-    await authors.delete({ name });
+  await author.destroy({ where: { name } });
 
-    return res.json(author);
-  }
+  return res.json({
+    author,
+    message: `${name} has been deleted`,
+  });
 };

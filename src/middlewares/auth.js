@@ -1,5 +1,6 @@
 import httpstatus from "http-status";
-import { getRepository } from "../lib/util.js";
+import database from "../lib/database.js";
+const { key } = database;
 
 export const auth = async (req, _, next) => {
   try {
@@ -12,8 +13,7 @@ export const auth = async (req, _, next) => {
       throw err;
     }
 
-    const keys = getRepository("Key");
-    const keyExists = await keys.findOneBy({ key: apiKey });
+    const keyExists = await key.findOne({ where: { key: apiKey } });
 
     if (!keyExists) {
       err = new Error("BAD REQUEST - That key isn't valid.");

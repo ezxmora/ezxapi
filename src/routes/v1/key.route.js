@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { validate } from "express-validation";
+import { body } from "express-validator";
 import { createKey, refreshKey } from "../../controllers/key.controller.js";
 import { auth } from "../../middlewares/auth.js";
-import { validEmail } from "../../middlewares/validation.js";
 const router = Router({ caseSensitive: true });
 
 router
-  .post("/", [validate(validEmail)], createKey)
-  .put("/", [validate(validEmail), auth], refreshKey);
+  .post("/", [body("email").isEmail()], createKey)
+  .put("/", [body("email").isEmail(), auth], refreshKey);
 
 export default router;
