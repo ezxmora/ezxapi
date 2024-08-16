@@ -29,7 +29,7 @@ export const validExtension = (type) => {
     const { ext } = req.query;
     const validExtensions = {
       video: ["mp4", "webm"],
-      audio: ["mp3", "ogg"],
+      audio: ["mp3", "ogg", "m4a"],
     };
 
     if (!ext) {
@@ -72,7 +72,7 @@ export const authorExists = async (req, _, next) => {
   }
 };
 
-export const quoteExists = async (req, res, next) => {
+export const quoteExists = async (req, _, next) => {
   const { id } = req.body;
 
   if (!id) {
@@ -90,4 +90,32 @@ export const quoteExists = async (req, res, next) => {
   }
 
   return next();
+};
+
+export const isATweet = async (req, _, next) => {
+  const { url } = req.query;
+
+  try {
+    if (!url) {
+      const err = new Error("You need to provide a URL");
+      err.statusCode = httpstatus.BAD_REQUEST;
+      throw err;
+    }  
+
+    if (
+      !url.match(
+        /(https|http):\/\/(www\.)?(x|twitter)\.com\/(\w+)\/(status(?:es)?)\/(\d+)/gim
+      )
+    ) {
+      const err = new Error(
+        "You need to provide a valid URL - This is not a tweet"
+      );
+      err.statusCode = httpstatus.BAD_REQUEST;
+      throw err;
+    }
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
 };

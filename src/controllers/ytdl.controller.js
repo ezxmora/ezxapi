@@ -17,7 +17,7 @@ export const getVideo = async (req, res, next) => {
 
   try {
     await ytdl(url, {
-      format: `bestvideo[ext=${ext}]+bestaudio/best[ext=${ext}]/best`,
+      format: `bv[ext=${ext}]+ba[ext=m4a]/b[ext=${ext}]/b`,
       maxFilesize: "50M",
       output: fileRoute,
       restrictFilenames: true,
@@ -38,7 +38,7 @@ export const getVideo = async (req, res, next) => {
 export const getAudio = async (req, res, next) => {
   const { url, ext } = req.query;
   const filename = `${randomString()}.${ext}`;
-  const fileRoute = `./videos/${filename}`;
+  const fileRoute = `./media/${filename}`;
 
   try {
     await ytdl(url, {

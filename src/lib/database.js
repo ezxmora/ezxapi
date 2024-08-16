@@ -44,7 +44,7 @@ Object.keys(database).forEach((modelName) => {
 
 if (env !== "production") {
   await sequelize.sync({ force: true });
-  const { key, author, quote } = database;
+  const { key, author, quote, blacklisted } = database;
   // Dummy data for testing purposes
   await key.create({
     key: "79cf940f1c6f9876db59571015fc1e28ad85c20c81f1cdeef4bdae28b1dd811b",
@@ -132,6 +132,18 @@ if (env !== "production") {
     id: "00000000-0000-0000-0000-000000000013",
     quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac.",
     authorId: "00000000-0000-0000-0000-000000000000",
+  });
+
+  await blacklisted.create({
+    id: "00000000-0000-0000-0000-000000000014",
+    username: "felipez360",
+    hide: false,
+  });
+
+  await blacklisted.create({
+    id: "00000000-0000-0000-0000-000000000015",
+    username: "eriknaitor",
+    hide: false,
   });
 } else {
   await sequelize.sync();
