@@ -1,5 +1,6 @@
 import bodyparser from "body-parser";
 import compress from "compression";
+import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -10,6 +11,8 @@ import api from "./api.js";
 import images from "./images.js";
 
 const app = express();
+
+app.use(cors());
 
 // request logging. dev: console | production: file
 app.use(morgan(logs));
