@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/ezxmora/ezxapi/compare/v1.0.0...v2.0.0) (2024-08-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* bumped packages, added new routes and fixed things📦
+
+### Features
+
+* added cors 🌐 ([001d3f6](https://github.com/ezxmora/ezxapi/commit/001d3f65eadd2775d68cd0bede4e1219432bfede))
+* bumped packages, added new routes and fixed things📦 ([4070284](https://github.com/ezxmora/ezxapi/commit/407028472a20dfa88632b2953a3471356c2b295e))
+
 ## 1.0.0 (2023-11-24)
 
 

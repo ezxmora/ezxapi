@@ -1,6 +1,6 @@
 {
   "name": "ezxapi",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A personal open source REST API for private use",
   "main": "src/index.js",
   "type": "module",
